@@ -117,9 +117,10 @@ run `lsblk` to find the usb stick
 run `sudo mkdir -p /mnt/usb`
 run `sudo mount /dev/sd?? /mnt/usb`
 
-run `mkdir ~/.ssh`
-run `chmod 0700 ~/.ssh`
-run `touch ~/.ssh/authorized_keys`
-run `cat /mnt/usb/id_rsa.something.pub > ~/.ssh/authorized_keys`
-run `chmod 0600 ~/.ssh/authorized_keys`
+* run `mkdir ~/.ssh`
+* run `chmod 0700 ~/.ssh`
+* run `touch ~/.ssh/authorized_keys`
+* run `cat /mnt/usb/id_rsa.something.pub >> ~/.ssh/authorized_keys`
+* repeat above for additional ssh keys
+* run `chmod 0600 ~/.ssh/authorized_keys`
 
