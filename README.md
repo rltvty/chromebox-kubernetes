@@ -160,12 +160,6 @@ Your identification has been saved in id_rsa.home_kube.
 Your public key has been saved in id_rsa.home_kube.pub.
 ```
 
-#### Install OpenSSL Server on chromebox
-
-`sudo apt-get update`
-`sudo apt-get install openssh-server`
-`sudo service ssh start`
-
 #### Copy SSH .pub keys onto a USB stick
 
 plug stick into chromebox
@@ -187,9 +181,11 @@ plug stick into chromebox
 #### Connect to chromebox via SSH from your laptop
 * `ssh -i .ssh/id_rsa.something username@IP.Address`
 
-## Install Kubernetes
+## Create the intial Kubernetes Master
 
-See http://kubernetes.io/docs/getting-started-guides/kubeadm/
+Following the steps below, you can create a Kubernetes Master on a single chromebox.  After the initial master is setup, we will transition to a High Availablity (HA) cluster by copying configuration to the other boxes.
+
+Refrence http://kubernetes.io/docs/getting-started-guides/kubeadm/ for more info.
 
 ### Install
 
@@ -263,7 +259,12 @@ kube-system   kube-scheduler-cb0                1/1       Running   0          8
 kube-system   weave-net-gzsis                   2/2       Running   0          2m
 ```
 
-### Install Weave Scope
+### Install Weave Scope and Kubernetes Dashboard
+
+* `kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml'`
+* `kubectl apply -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml`
+
+
 
 
 
