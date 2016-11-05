@@ -88,6 +88,16 @@ On the developer warning screen, press `ctrl-U`
 
 ### Install ubuntu with minimal packages
 
+* unselect `standard system utilities`
+* select openssh-server
+
+
+### After initial boot
+
+* login using user/pass created during install
+* run `sudo apt-get update`
+* run `sudo apt-get install bash-completion`
+
 ### Setup SSH on chromebox
 
 #### Create a SSH Key on your laptop
@@ -112,10 +122,10 @@ Your public key has been saved in id_rsa.home_kube.pub.
 
 plug stick into chromebox
 
-run `lsblk` to find the usb stick
+* run `lsblk` to find the usb stick
 
-run `sudo mkdir -p /mnt/usb`
-run `sudo mount /dev/sd?? /mnt/usb`
+* run `sudo mkdir -p /mnt/usb`
+* run `sudo mount /dev/sd?? /mnt/usb`
 
 * run `mkdir ~/.ssh`
 * run `chmod 0700 ~/.ssh`
@@ -123,6 +133,8 @@ run `sudo mount /dev/sd?? /mnt/usb`
 * run `cat /mnt/usb/id_rsa.something.pub >> ~/.ssh/authorized_keys`
 * repeat above for additional ssh keys
 * run `chmod 0600 ~/.ssh/authorized_keys`
+
+* run `sudo umount /mnt/usb`
 
 #### Connect to chromebox via SSH from your laptop
 * `ssh -i .ssh/id_rsa.something username@IP.Address`
