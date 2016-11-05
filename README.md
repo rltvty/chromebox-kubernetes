@@ -124,3 +124,10 @@ run `sudo mount /dev/sd?? /mnt/usb`
 * repeat above for additional ssh keys
 * run `chmod 0600 ~/.ssh/authorized_keys`
 
+#### Connect to chromebox via SSH from your laptop
+* `ssh -i .ssh/id_rsa.something username@IP.Address`
+
+## Install Kubernetes
+
+See http://kubernetes.io/docs/getting-started-guides/kubeadm/
+
