@@ -10,7 +10,7 @@ WARNING: This will erase all user data on the device.
 With the device powered off:
 * Insert a paperclip into the hole left of the SD card slot and press the recovery button
 
-Recoverybutton.png
+![Recovery Button](https://github.com/rltvty/chromebox-kubernetes/blob/master/images/Recoverybutton.png)
 
 * Power on the device, then remove the paper clip
 * When greeted with the recovery screen, press [CTRL-D] to enter developer mode
@@ -18,7 +18,7 @@ Recoverybutton.png
 
 After confirming, the device will reboot and wipe any existing user data - this will take ~5 minutes. Afterwards, the ChromeBox will be in developer mode (vs verified boot mode), and the developer boot screen (shown below) will be displayed at each boot. 
 
-ChromeBox dev boot.jpg
+![ChromeBox dev boot](https://github.com/rltvty/chromebox-kubernetes/blob/master/images/ChromeBox_dev_boot.jpg)
 
 Note: The recovery button (and booting to recovery mode) are a function of the stock firmware. If you've flashed a custom firmware on your box (either as part of a standalone setup or otherwise), the recovery button has no function and the ChromeOS recovery mode doesn't exist. 
 
