@@ -1,6 +1,29 @@
 # chromebox-kubernetes
 How to create a Kubernetes cluster on a set of Chromeboxes
 
+## Updating your chromebox to accept a custom OS
+
+You need to put your chromebox into "developer mode" in order to install a custom OS. Note that the instructions below assume you want to completely replace chromeos with a custom OS.  If you want to dual-boot, do not follow these instructions.
+
+WARNING: This will erase all user data on the device. 
+
+With the device powered off:
+* Insert a paperclip into the hole left of the SD card slot and press the recovery button
+
+Recoverybutton.png
+
+* Power on the device, then remove the paper clip
+* When greeted with the recovery screen, press [CTRL-D] to enter developer mode
+* Press the recovery button (with paperclip) to confirm.
+
+After confirming, the device will reboot and wipe any existing user data - this will take ~5 minutes. Afterwards, the ChromeBox will be in developer mode (vs verified boot mode), and the developer boot screen (shown below) will be displayed at each boot. 
+
+ChromeBox dev boot.jpg
+
+Note: The recovery button (and booting to recovery mode) are a function of the stock firmware. If you've flashed a custom firmware on your box (either as part of a standalone setup or otherwise), the recovery button has no function and the ChromeOS recovery mode doesn't exist. 
+
+
+
 ## Installing the base OS 
 
 ### Ubuntu Server
