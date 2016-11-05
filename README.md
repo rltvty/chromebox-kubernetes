@@ -22,7 +22,13 @@ After confirming, the device will reboot and wipe any existing user data - this 
 
 Note: The recovery button (and booting to recovery mode) are a function of the stock firmware. If you've flashed a custom firmware on your box (either as part of a standalone setup or otherwise), the recovery button has no function and the ChromeOS recovery mode doesn't exist. 
 
+## Enable USB Booting
 
+After in developer mode, the box will show the "scary" boot screen, and then continue to boot into Chromeos.  After it finshes, press `ctrl-alt-F2` to get a shell.
+
+* login with `chronos` user.
+* `sudo su` to get root
+* `eanble_dev_usb_boot` to enable usb booting
 
 ## Installing the base OS 
 
@@ -75,3 +81,45 @@ $ sudo dd if=./Downloads/ubuntu-16.04.1-server-amd64.iso of=/dev/rdisk2 bs=1m
 $ diskutil eject /dev/disk2
 Disk /dev/disk2 ejected
 ```
+
+### Reboot chrome box after enabling developer mode and inserting the USB install stick
+
+On the developer warning screen, press `ctrl-U`
+
+### Install ubuntu with minimal packages
+
+### Setup SSH on chromebox
+
+#### Create a SSH Key on your laptop
+
+```
+ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/epinzur/.ssh/id_rsa): id_rsa.home_kube
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in id_rsa.home_kube.
+Your public key has been saved in id_rsa.home_kube.pub.
+```
+
+#### Install OpenSSL Server on chromebox
+
+`sudo apt-get update`
+`sudo apt-get install openssh-server`
+`sudo service ssh start`
+
+#### Copy SSH .pub keys onto a USB stick
+
+plug stick into chromebox
+
+run `lsblk` to find the usb stick
+
+run `sudo mkdir -p /mnt/usb`
+run `sudo mount /dev/sd?? /mnt/usb`
+
+run `mkdir ~/.ssh`
+run `chmod 0700 ~/.ssh`
+run `touch ~/.ssh/authorized_keys`
+run `cat /mnt/usb/id_rsa.something.pub > ~/.ssh/authorized_keys`
+run `chmod 0600 ~/.ssh/authorized_keys`
+
