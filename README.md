@@ -203,6 +203,8 @@ kube-system   kube-scheduler-cb0                1/1       Running   0          8
 kube-system   weave-net-gzsis                   2/2       Running   0          2m
 ```
 
+### Install Weave Scope
+
 
 
 
