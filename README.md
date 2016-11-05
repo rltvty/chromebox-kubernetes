@@ -16,7 +16,7 @@ With the device powered off:
 * When greeted with the recovery screen, press [CTRL-D] to enter developer mode
 * Press the recovery button (with paperclip) to confirm.
 
-After confirming, the device will reboot and wipe any existing user data - this will take ~5 minutes. Afterwards, the ChromeBox will be in developer mode (vs verified boot mode), and the developer boot screen (shown below) will be displayed at each boot. 
+After confirming, the device will reboot and wipe any existing user data - this will take ~5 minutes. Note that initially it will appear to not work.  Wait about a minute and stuff should start happening.  Afterwards, the ChromeBox will be in developer mode (vs verified boot mode), and the developer boot screen (shown below) will be displayed at each boot. 
 
 ![ChromeBox dev boot](https://github.com/rltvty/chromebox-kubernetes/blob/master/images/ChromeBox_dev_boot.jpg)
 
