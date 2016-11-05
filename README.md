@@ -3,6 +3,12 @@ How to create a Kubernetes cluster on a set of Chromeboxes
 
 ## Updating your chromebox to accept a custom OS
 
+### Open the chromebox and remove the firmware write protect screw
+
+![Firmware Write Protext](https://github.com/rltvty/chromebox-kubernetes/blob/master/images/inside-chromebox.jpg)
+
+### Switching to developer mode
+
 You need to put your chromebox into "developer mode" in order to install a custom OS. Note that the instructions below assume you want to completely replace chromeos with a custom OS.  If you want to dual-boot, do not follow these instructions.
 
 WARNING: This will erase all user data on the device. 
@@ -22,21 +28,38 @@ After confirming, the device will reboot and wipe any existing user data - this 
 
 Note: The recovery button (and booting to recovery mode) are a function of the stock firmware. If you've flashed a custom firmware on your box (either as part of a standalone setup or otherwise), the recovery button has no function and the ChromeOS recovery mode doesn't exist. 
 
-## Enable USB Booting
+### Enable USB Booting
 
 After in developer mode, the box will show the "scary" boot screen, and then continue to boot into Chromeos.  After it finshes, press `ctrl-alt-F2` to get a shell.
 
 * login with `chronos` user.
 * `sudo su` to get root
-* `eanble_dev_usb_boot` to enable usb booting
+* `chromeos-firmwareupdate –-mode=todev`
+* `crossystem dev_boot_usb=1`
+* `crossystem dev_boot_legacy=1`
+* `exit` to get out of root
+
+### Install SeaBIOS 
+
+Reference: https://johnlewis.ie/custom-chromebook-firmware/rom-download/
+
+From the chronos promt:
+
+* `cd; rm -f flash_chromebook_rom.sh; curl -O https://johnlewis.ie/flash_chromebook_rom.sh; sudo -E bash flash_chromebook_rom.sh`
+* When prompted Choose the *FULL ROM* option.  It was #5 for me.
+* When prompted type `If this bricks my panther, on my head be it!`
+
+It may appear like nothing is happening.  Just wait until it finishes. Takes about 5 minutes.
+
+Don't worry that the script was written for chromeBOOK and we are using a chromeBOX
 
 ## Installing the base OS 
 
-### Ubuntu Server
+We will be using ubuntu server as the base OS.
 
 Download the latest Ubuntu Server 64-bit LTS iso, from ubuntu.com.  
 
-#### Create a bootable USB stick with the ISO from OS X terminal
+### Create a bootable USB stick with the ISO from OS X terminal
 
 General Instructions:
 * insert the USB stick into your machine.
@@ -82,15 +105,40 @@ $ diskutil eject /dev/disk2
 Disk /dev/disk2 ejected
 ```
 
-### Reboot chrome box after enabling developer mode and inserting the USB install stick
+### Install the OS
 
-On the developer warning screen, press `ctrl-U`
+#### Initial install
 
-### Install ubuntu with minimal packages
+* make sure your chromebox is in developer mode, has seaBIOS installed, etc... (see above)
+* put the USB Install stick into the chromebos
+* start (or reboot) the chromebox
+* press ESC at the boot menu, then select the USB drive.  
+* * There may be 2 or more USB options.  If one doesn't work, restart the box and try another.
+* * If it still doesn't boot, try making a bootable USB stick with another brand/type USB Stick.  (I've had no success using cheap sticks that companies give out as promotions, but every stick I've bought myself has worked fine.)
 
-* unselect `standard system utilities`
-* select openssh-server
+#### Install ubuntu with minimal packages
 
+Follow the install process.  I'll note options you should choose below, for when it is less clear what to do.  These are the steps using Ubuntu Server 16.04.1 LTS.  They may be different on other versions
+
+* Choose *Install Ubuntu Server*
+* Hostname selection: Make sure each box is different... I used cb0, cb1, and cb2
+* Username & Password: Use the same for all 3 boxes
+* Don't bother encrypting your home directory
+* Unmount partitions that are in use? - YES
+* Partitioning method: Guided - use entire disk and set up LVM
+* Select disk to partition: SCSI1 (0,0,0) (sda)
+* Write the changes to disks and configure LVM? - YES
+* Amount of volume group to use for guided partitioning: use default or `max`
+* Write the changes to disks? - YES
+* HTTP proxy information: (blank)
+* How do you want to manage upgrades on this system? - Install security updates automatically
+
+* Choose software to install:
+* * unselect `standard system utilities` (takes about 600 MB that can be used for pods instead)
+* * select openssh-server
+
+* Install the GRUB boot loader to the master boot record? - YES
+* Device for boot laoder installation: /dev/sda
 
 ### After initial boot
 
