@@ -148,7 +148,22 @@ Follow the install process.  I'll note options you should choose below, for when
 * login using user/pass created during install
 * run `sudo apt-get update`
 * run `sudo apt-get install bash-completion`
-
+* verify all boxes have different mac addresses:
+  * run `sudo ifconfig`
+    * compare the hardware address for the Ethernet device on each box
+    * For me was device `enp1s0`, and 2 of my 3 boxes had the same hardware address
+* if needed, adjust mac addreses:
+  * edit `/etc/network/interfaces` => run `sudo vi /etc/network/interfaces`
+  * add a line to the ethernet adapter section to specify a unique hardware address on each box
+     * example completed config for `enp1s0`: 
+     ```
+      auto enp1s0
+      iface enp1s0 inet dhcp
+          hwaddress aa:bb:cc:dd:ee:01
+     ```
+  * restart the box to get the new network configuration
+    * run `sudo shutdown -r now`
+      
 ### Setup SSH on chromebox
 
 #### Create a SSH Key on your laptop
