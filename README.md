@@ -118,18 +118,21 @@ Disk /dev/disk2 ejected
 
 #### Install ubuntu with minimal packages
 
-Follow the install process.  I'll note options you should choose below, for when it is less clear what to do.  These are the steps using Ubuntu Server 16.04.1 LTS.  They may be different on other versions
+Follow the install process.  I'll note options you should choose below, for when it is less clear what to do.  These are the steps using Ubuntu Server 16.04.3 LTS.  They may be different on other versions
 
 * Choose *Install Ubuntu Server*
 * Hostname selection: Make sure each box is different... I used cb0, cb1, and cb2
 * Username & Password: Use the same for all 3 boxes
 * Don't bother encrypting your home directory
 * Unmount partitions that are in use? - YES
-* Partitioning method: Guided - use entire disk and set up LVM
-* Select disk to partition: SCSI1 (0,0,0) (sda)
-* Write the changes to disks and configure LVM? - YES
-* Amount of volume group to use for guided partitioning: use default or `max`
-* Write the changes to disks? - YES
+* Partitioning method: Manual, working on disk: SCSI1 (0,0,0) (sda)
+  * Delete Swap partition
+  * Delete Primary partition
+  * Create new partition in the free space
+    * 12 GB / Primary / Beginning / Mount point: `/` / Bootable - On / Done setting up the partition
+  * Create new partition in the remaing free space
+    * 4 GB / Logical / Use as: `swap area` / Done setting up the partition
+* Finish partitioning and write chagnes to disk - YES
 * HTTP proxy information: (blank)
 * How do you want to manage upgrades on this system? - Install security updates automatically
 
