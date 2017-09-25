@@ -146,8 +146,6 @@ Follow the install process.  I'll note options you should choose below, for when
 ### After initial boot
 
 * login using user/pass created during install
-* run `sudo apt-get update`
-* run `sudo apt-get install bash-completion`
 * verify all boxes have different mac addresses:
   * run `sudo ifconfig`
     * compare the hardware address for the Ethernet device on each box
