@@ -65,3 +65,19 @@ chmod +x ./kubectl
 ```
 sudo mv ./kubectl /usr/local/bin/kubectl
 ```
+
+#### kubelet and kubeadm
+1. Become root
+```
+sudo -i
+```
+2. Install the things
+```
+apt-get update && apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm
+```
