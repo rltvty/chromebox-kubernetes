@@ -1,0 +1,37 @@
+[Unit]
+Description=etcd
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+#configuration
+Environment=ETCD_NAME=cb1
+Environment=ETCD_IP=192.168.1.11
+Environment=ETCD_TOKEN=some-random-token
+Environment=ETCD_HOST0_IP=192.168.1.10
+Environment=ETCD_HOST1_IP=192.168.1.11
+Environment=ETCD_HOST2_IP=192.168.1.12
+Environment=ETCD_HOST0_NAME=cb0
+Environment=ETCD_HOST1_NAME=cb1
+Environment=ETCD_HOST2_NAME=cb2
+
+#basic config
+Environment=ETCD_DATA_DIR=/var/etcd/data
+Environment=ETCD_LISTEN_PEER_URLS=http://$ETCD_IP:2380
+Environment=ETCD_LISTEN_CLIENT_URLS=http://$ETCD_IP:2379,http://127.0.0.1:2379
+Environment=ETCD_ADVERTISE_CLIENT_URLS=http://$ETCD_IP:2379
+
+#initial cluster configuration
+Environment=ETCD_INITIAL_CLUSTER=$ETCD_HOST0_NAME=http://$ETCD_HOST0_IP:2380,$ETCD_HOST1_NAME=http://$ETCD_HOST1_IP:2380,$ETCD_HOST2_NAME=http://$ETCD_HOST2_IP:2380
+Environment=ETCD_INITIAL_CLUSTER_TOKEN=$ETCD_TOKEN
+Environment=ETCD_INITIAL_CLUSTER_STATE=new
+Environment=ETCD_INITIAL_ADVERTISE_PEER_URLS=http://$ETCD_IP:2380
+
+#tuning see https://github.com/coreos/etcd/blob/master/Documentation/tuning.md
+Environment=ETCD_HEARTBEAT_INTERVAL=100
+Environment=ETCD_ELECTION_TIMEOUT=2500
+
+ExecStart=/usr/bin/etcd
+Restart=always
