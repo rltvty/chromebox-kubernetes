@@ -81,3 +81,78 @@ EOF
 apt-get update
 apt-get install -y kubelet kubeadm
 ```
+
+3. Exit root
+```
+exit
+```
+
+#### etcd
+1. Become root
+```
+sudo -i
+```
+2. Install the things
+```
+export ETCD_VER=v3.2.7
+export DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
+
+rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+rm -rf /tmp/etcd-download && mkdir -p /tmp/etcd-download
+
+curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download --strip-components=1
+
+mv /tmp/etcd-download/etcd* /usr/local/bin/
+
+rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+rm -rf /tmp/etcd-download
+```
+3. Confirm installed versions
+```
+    etcd --version
+    ETCDCTL_API=3 etcdctl version
+```
+4. Make the data directory
+```
+mkdir -p /var/etcd/data
+```
+5. Exit root
+```
+exit
+```
+
+### Setup etcd
+
+#### Configure startup scripts
+
+1. Make a copy of the example systemd service scripts from here: https://github.com/rltvty/chromebox-kubernetes/tree/master/etcd
+
+
+2. Edit the `[Service]` section of each script
+   * Set `ETCD_NAME` to the dns name of the specific box
+   * Set `ETCD_LISTEN_PEER_URLS` to the ip of the specific box, keeping the existing port 
+   * Set `ETCD_LISTEN_CLIENT_URLS` to the ip of the specific box, keeping the existing port and localhost config
+   * Set `ETCD_ADVERTISE_CLIENT_URLS` to the ip of the specific box, keeping the existing port 
+   * Set `ETCD_INITIAL_ADVERTISE_PEER_URLS` to the ip of the specific box, keeping the existing port
+   * Set `ETCD_INITIAL_CLUSTER` to the host names and ips of all the boxes.  Will be the same on all boxes.
+   * Set `ETCD_INITIAL_CLUSTER_TOKEN` to an unique name for your cluster.  Should be the same value on all boxes
+3. Create a new file on each box and paste in the contents of the specific file for the box.
+```
+sudo vi /etc/systemd/system/etcd.service
+```
+4. Load the config, enable the service, start the service
+```
+sudo systemctl daemon-reload
+sudo systemctl enable etcd.service
+sudo systemctl restart etcd.service
+```
+5. Confirm etcd is runing
+```
+sudo systemctl status etcd
+```
+6. If not running, check logs
+```
+sudo journalctl -u etcd.service
+```
+
