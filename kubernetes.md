@@ -47,7 +47,7 @@ sudo apt-get install docker-ce=17.06.2~ce-0~ubuntu
 sudo docker run hello-world
 ```
 
-####Kubectl
+#### Kubectl
 
 1. Figure out the latest version
 ```
