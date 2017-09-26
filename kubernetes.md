@@ -38,9 +38,9 @@ sudo apt-get update
 ```
 apt-cache madison docker-ce
 ```
-7. Install a version
+7. Install a version (17.06.02 in this case)
 ```
-sudo apt-get install docker-ce=<VERSION>
+sudo apt-get install docker-ce=17.06.2~ce-0~ubuntu
 ```
 8. Test the install
 ```
