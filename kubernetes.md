@@ -47,3 +47,21 @@ sudo apt-get install docker-ce=17.06.2~ce-0~ubuntu
 sudo docker run hello-world
 ```
 
+####Kubectl
+
+1. Figure out the latest version
+```
+curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+```
+2. Download that release
+```
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kubectl
+```
+3. Make the kubectl binary executable.
+```
+chmod +x ./kubectl
+```
+4. Move the binary in to your PATH.
+```
+sudo mv ./kubectl /usr/local/bin/kubectl
+```
