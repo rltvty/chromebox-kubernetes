@@ -7,6 +7,14 @@ and setup master-elected scheduler and controller daemons.
 
 #### Docker
 
+KubeADM Way
+```
+apt-get update
+apt-get install -y docker.io
+```
+
+** -- OR -- **
+
 1. Update the `apt` package index:
 ```
 sudo apt-get update
@@ -38,7 +46,7 @@ sudo apt-get update
 ```
 apt-cache madison docker-ce
 ```
-7. Install a version (17.06.02 in this case)
+7. Install docker
 ```
 sudo apt-get install docker-ce=17.06.2~ce-0~ubuntu
 ```
@@ -48,6 +56,26 @@ sudo docker run hello-world
 ```
 
 #### Kubectl
+
+KubeADM Way
+
+1. Become Root `sudo -1`
+
+2. Install the things
+```
+apt-get update && apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+```
+
+3. Exit root. `exit`
+
+** -- OR -- **
+
 
 1. Figure out the latest version
 ```
