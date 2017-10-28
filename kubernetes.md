@@ -5,154 +5,105 @@ and setup master-elected scheduler and controller daemons.
 
 ### Install some stuff
 
+#### Pre-requisites
+
+On every node do the following:
+
+* get root
+   ```
+   sudo su
+   ```
+
+* Set `/proc/sys/net/bridge/bridge-nf-call-iptables` to `1` to pass bridged IPv4 traffic to iptables’ chains. This is a requirement for CNI plugins to work, for more information please see: [here](https://kubernetes.io/docs/concepts/cluster-administration/network-plugins/#network-plugin-requirements).
+   ```
+   sysctl net.bridge.bridge-nf-call-iptables=1
+   ```
+
+* Verify the MAC address and product_uuid are unique
+   ```
+   ifconfig -a
+   ```
+   Ensure the ip address and mac address for the primary network interface on each node is unique.  
+     * `enp1s01` is the primary network interface on my nodes.
+     
+* Update your libraries
+  ```
+  apt-get update
+  apt-get upgrade
+  apt autoremove
+  ```
+
 #### Docker
 
-KubeADM Way
-```
-apt-get update
-apt-get install -y docker.io
-```
+On every node do the following:
 
-** -- OR -- **
+* Install docker
+   ```
+   apt-get install -y docker.io
+   ```
 
-1. Update the `apt` package index:
-```
-sudo apt-get update
-```
-2. Install packages to allow `apt` to use a repository over HTTPS:
-```
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-```
-3. Add Docker’s official GPG key:
-```
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-```
-4. Use the following command to set up the stable repository:
-```
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-```
-5. Update the `apt` package index (to pull in the docker repository items)
-```
-sudo apt-get update
-```
-6. List available versions
-```
-apt-cache madison docker-ce
-```
-7. Install docker
-```
-sudo apt-get install docker-ce=17.06.2~ce-0~ubuntu
-```
-8. Test the install
-```
-sudo docker run hello-world
-```
+* Make sure that the cgroup driver used by kubelet is the same as the one used by Docker. 
+   ```
+   cat << EOF > /etc/docker/daemon.json
+   {
+       "exec-opts": ["native.cgroupdriver=systemd"]
+   }
+   EOF
+   ```
+* Restart docker
+   ```
+   systemctl restart docker
+   ```
 
-#### Kubectl
+#### Kubectl, Kubeadm, Kubelet
 
-KubeADM Way
+On every node do the following:
 
-1. Become Root `sudo -1`
-
-2. Install the things
-```
-apt-get update && apt-get install -y apt-transport-https
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-apt-get update
-apt-get install -y kubelet kubeadm kubectl
-```
-
-3. Exit root. `exit`
-
-** -- OR -- **
-
-
-1. Figure out the latest version
-```
-curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-```
-2. Download that release
-```
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kubectl
-```
-3. Make the kubectl binary executable.
-```
-chmod +x ./kubectl
-```
-4. Move the binary in to your PATH.
-```
-sudo mv ./kubectl /usr/local/bin/kubectl
-```
-
-#### kubelet and kubeadm
-1. Become root
-```
-sudo -i
-```
-2. Install the things
-```
-apt-get update && apt-get install -y apt-transport-https
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-apt-get update
-apt-get install -y kubelet kubeadm
-```
-
-3. Exit root
-```
-exit
-```
+* Install the things
+   ```
+   apt-get update && apt-get install -y apt-transport-https
+   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+   cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+   deb http://apt.kubernetes.io/ kubernetes-xenial main
+   EOF
+   apt-get update
+   apt-get install -y kubelet kubeadm kubectl
+   ```
 
 #### etcd
-1. Become root
-```
-sudo -i
-```
-2. Install the things
-```
-export ETCD_VER=v3.2.7
-export DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
 
-rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-rm -rf /tmp/etcd-download && mkdir -p /tmp/etcd-download
+On every node do the following:
 
-curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download --strip-components=1
+* Install the things
+   ```
+   export ETCD_VER=v3.2.7
+   export DOWNLOAD_URL=https://github.com/coreos/etcd/releases/download
+   
+   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+   rm -rf /tmp/etcd-download && mkdir -p /tmp/etcd-download
 
-mv /tmp/etcd-download/etcd* /usr/local/bin/
+   curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+   tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download --strip-components=1
 
-rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-rm -rf /tmp/etcd-download
-```
-3. Confirm installed versions
-```
-    etcd --version
-    ETCDCTL_API=3 etcdctl version
-```
-4. Make the data directory
-```
-mkdir -p /var/etcd/data
-```
-5. Exit root
-```
-exit
-```
+   mv /tmp/etcd-download/etcd* /usr/local/bin/
+
+   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+   rm -rf /tmp/etcd-download
+   ```
+* Confirm installed versions
+   ```
+   etcd --version
+   ```
+* Make the data directory
+   ```
+   mkdir -p /var/etcd/data
+   ```
 
 ### Setup etcd
 
 #### Configure startup scripts
+
+On every node do the following:
 
 1. Make a copy of the example systemd service scripts from here: https://github.com/rltvty/chromebox-kubernetes/tree/master/etcd
 
@@ -165,22 +116,35 @@ exit
    * Set `ETCD_INITIAL_ADVERTISE_PEER_URLS` to the ip of the specific box, keeping the existing port
    * Set `ETCD_INITIAL_CLUSTER` to the host names and ips of all the boxes.  Will be the same on all boxes.
    * Set `ETCD_INITIAL_CLUSTER_TOKEN` to an unique name for your cluster.  Should be the same value on all boxes
+   
 3. Create a new file on each box and paste in the contents of the specific file for the box.
-```
-sudo vi /etc/systemd/system/etcd.service
-```
+   ```
+   sudo vi /etc/systemd/system/etcd.service
+   ```
+   
 4. Load the config, enable the service, start the service
-```
-sudo systemctl daemon-reload
-sudo systemctl enable etcd.service
-sudo systemctl restart etcd.service
-```
+   ```
+   sudo systemctl daemon-reload
+   sudo systemctl enable etcd.service
+   sudo systemctl restart etcd.service
+   ```
+   
 5. Confirm etcd is runing
-```
-sudo systemctl status etcd
-```
+   ```
+   sudo systemctl status etcd
+   ```
+   
 6. If not running, check logs
+   ```
+   sudo journalctl -u etcd.service
+   ```
+
+#### Verify Etcd
+
+From any node:
+
 ```
-sudo journalctl -u etcd.service
+etcdctl cluster-health
 ```
 
+### Setup kubernetes
