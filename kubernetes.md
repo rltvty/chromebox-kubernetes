@@ -87,7 +87,7 @@ On every node do the following:
 
 * Install a version (use the same on every node):
    ```
-   apt-get install docker-ce=17.06.2~ce-0~ubuntu
+   apt-get install docker-ce=17.03.2~ce-0~ubuntu-xenial
    ```
 
 #### Kubectl, Kubeadm, Kubelet
