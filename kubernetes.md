@@ -46,19 +46,6 @@ On every node do the following:
    apt-get install -y docker.io
    ```
 
-* Make sure that the cgroup driver used by kubelet is the same as the one used by Docker. 
-   ```
-   cat << EOF > /etc/docker/daemon.json
-   {
-       "exec-opts": ["native.cgroupdriver=systemd"]
-   }
-   EOF
-   ```
-* Restart docker
-   ```
-   systemctl restart docker
-   ```
-
 #### Kubectl, Kubeadm, Kubelet
 
 On every node do the following:
@@ -152,3 +139,56 @@ etcdctl cluster-health
 ```
 
 ### Setup kubernetes
+
+#### Configure a single master node
+
+On one node:
+
+* Create a master config file, specifiying your existing etcd cluster:
+   ```
+   vi /etc/kubernetes/master.yaml
+   ```
+   * Add this contents, updated with your machine ips:
+      ```
+      apiVersion: kubeadm.k8s.io/v1alpha1
+      kind: MasterConfiguration
+      etcd:
+        endpoints:
+        - http://192.168.1.10:2379
+        - http://192.168.1.11:2379
+        - http://192.168.1.12:2379
+      networking:
+        podSubnet: 10.244.0.0/16
+      ```
+
+* Run kubeadm with the config file to create a bunch of stuff and get your master node going
+   ```
+   kubeadm init --config /etc/kubernetes/master.yaml
+   ```
+   * Make sure to save the `kubeadm join` command output.  It should look something like this:
+      ```
+      kubeadm join --token 12345f.abcdef12345678 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:0123456789abcdef...
+      ```
+
+* Exit root
+   ```
+   exit
+   ```
+   
+* Setup kubectl access from your normal user
+   ```
+   mkdir -p $HOME/.kube
+   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   ```
+   
+* Add flannel as the pod network
+   ```
+   kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.0/Documentation/kube-flannel.yml
+
+   ```
+
+* Remove the 'master' taint from the node, so that it can run containers
+   ```
+   kubectl taint nodes --all node-role.kubernetes.io/master-
+   ```
