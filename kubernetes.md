@@ -192,3 +192,37 @@ On one node:
    ```
    kubectl taint nodes --all node-role.kubernetes.io/master-
    ```
+* Create tar of config files for next step
+  * goto home directory
+     ```
+     cd ~
+     ```
+  * tar up files
+     ```
+     sudo tar -zcvf kube_master_configs.tar.gz /etc/kubernetes/*
+     ```
+   
+#### Create the High Availability Cluster
+
+On the remaining nodes, with root:
+
+* goto home folder
+   ```
+   cd ~
+   ```
+   
+* use scp to copy config tar to node (make sure to update with your user and master node ip)
+   ```
+   scp user@192.168.1.10:kube_master_configs.tar.gz ./ 
+   ```
+
+* make initial config folder
+   ```
+   mkdir /etc/kubernetes
+   ```
+* extract the configs
+   ```
+   tar -xf kube_master_configs.tar.gz
+   ```
+
+
