@@ -269,11 +269,12 @@ On the remaining nodes, with root:
    scp user@192.168.1.10:kube_master_configs.tar.gz ./ 
    ```
 
-* make initial config folder
+* join the cluster using the saved command from earlier, to add this node as a worker
    ```
-   mkdir /etc/kubernetes
+   kubeadm join --token 12345f.abcdef12345678 192.168.1.10:6443 --discovery-token-ca-cert-hash sha256:0123456789abcdef...
    ```
-* extract the configs
+   
+* extract the configs to upgrade the worker to a master
    ```
    tar -xf kube_master_configs.tar.gz -C /
    ```
