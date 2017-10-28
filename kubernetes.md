@@ -41,9 +41,53 @@ On every node do the following:
 
 On every node do the following:
 
-* Install docker
+* Install packages to allow apt to use a repository over HTTPS:
    ```
-   apt-get install -y docker.io
+   apt-get install \
+       apt-transport-https \
+       ca-certificates \
+       curl \
+       software-properties-common
+   ```
+
+* Add Docker’s official GPG key:
+   ```
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+   ```
+
+* Verify that you now have the key with the fingerprint
+   ```
+   apt-key fingerprint 0EBFCD88
+   ```
+  * should get:
+     ```
+     pub   4096R/0EBFCD88 2017-02-22
+         Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88
+     uid                  Docker Release (CE deb) <docker@docker.com>
+     sub   4096R/F273FCD8 2017-02-22
+     ```
+
+* Use the following command to set up the stable repository
+   ```
+   add-apt-repository \
+      "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) \
+      stable"
+   ```
+
+* Update the apt package index:
+   ```
+   apt-get update
+   ```
+
+* Look at available versions:
+   ```
+   apt-cache madison docker-ce
+   ```
+
+* Install a version (use the same on every node):
+   ```
+   apt-get install docker-ce=17.06.2~ce-0~ubuntu
    ```
 
 #### Kubectl, Kubeadm, Kubelet
@@ -148,7 +192,7 @@ On one node:
    ```
    vi /etc/kubernetes/master.yaml
    ```
-   * Add this contents, updated with your machine ips:
+   * Add this contents, updated with your machine ips, hostnames, load-balancer ip & hostname:
       ```
       apiVersion: kubeadm.k8s.io/v1alpha1
       kind: MasterConfiguration
@@ -159,6 +203,15 @@ On one node:
         - http://192.168.1.12:2379
       networking:
         podSubnet: 10.244.0.0/16
+      apiServerCertSANs:
+      - cb0
+      - cb1
+      - cb2
+      - kube
+      - 192.168.1.10
+      - 192.168.1.11
+      - 192.168.1.12
+      - 192.168.1.80
       ```
 
 * Run kubeadm with the config file to create a bunch of stuff and get your master node going
@@ -222,7 +275,7 @@ On the remaining nodes, with root:
    ```
 * extract the configs
    ```
-   tar -xf kube_master_configs.tar.gz
+   tar -xf kube_master_configs.tar.gz -C /
    ```
 
 
