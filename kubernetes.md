@@ -235,10 +235,10 @@ On one node:
    sudo chown $(id -u):$(id -g) $HOME/.kube/config
    ```
    
-* Add flannel as the pod network
+* Add Weave as the pod network
    ```
-   kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.0/Documentation/kube-flannel.yml
-
+   export kubever=$(kubectl version | base64 | tr -d '\n')
+   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
    ```
 
 * Remove the 'master' taint from the node, so that it can run containers
