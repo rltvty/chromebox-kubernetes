@@ -13,11 +13,6 @@ On every node do the following:
    ```
    sudo su
    ```
-* disable swap
-   ```
-   swapoff -a
-   ```
-
 * Set `/proc/sys/net/bridge/bridge-nf-call-iptables` to `1` to pass bridged IPv4 traffic to iptables’ chains. This is a requirement for CNI plugins to work, for more information please see: [here](https://kubernetes.io/docs/concepts/cluster-administration/network-plugins/#network-plugin-requirements).
    ```
    sysctl net.bridge.bridge-nf-call-iptables=1
