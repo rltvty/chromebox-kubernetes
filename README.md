@@ -126,13 +126,14 @@ Follow the install process.  I'll note options you should choose below, for when
 * Don't bother encrypting your home directory
 * Unmount partitions that are in use? - YES
 * Partitioning method: Manual, working on disk: SCSI1 (0,0,0) (sda)
+  * Note that we will create a single partition that covers the full disk.  There will be no swap partition since this is no longer usable with kubernetes and therefore will just take up space that can be used elsewhere.
   * Delete Swap partition
   * Delete Primary partition
   * Create new partition in the free space
-    * 12 GB / Primary / Beginning / Mount point: `/` / Bootable - On / Done setting up the partition
-  * Create new partition in the remaing free space
-    * 4 GB / Logical / Use as: `swap area` / Done setting up the partition
+    * 16 GB / Primary / Mount point: `/` / Bootable - On / Done setting up the partition
 * Finish partitioning and write chagnes to disk - YES
+* On no-swap-space confirmation page, say <No> to continue without setting up swap space.
+* Confirm <Yes> to write changes to disk.
 * HTTP proxy information: (blank)
 * How do you want to manage upgrades on this system? - Install security updates automatically
 
