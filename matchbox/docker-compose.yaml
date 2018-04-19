@@ -1,0 +1,30 @@
+# Create machine profiles, groups, or Ignition configs by adding files to ./data
+
+version: "3"
+services:
+  matchbox:
+    network_mode: "host"
+    image: "quay.io/coreos/matchbox:latest"
+    volumes:
+      - ./config:/etc/matchbox:ro
+      - ./assets:/var/lib/matchbox/assets
+      - ./data:/var/lib/matchbox
+    environment:
+      - MATCHBOX_ADDRESS=0.0.0.0:8080
+      - MATCHBOX_RPC_ADDRESS=0.0.0.0:8081
+      - MATCHBOX_LOG_LEVEL=debug
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+
+# mkdir -p /var/lib/matchbox/assets
+# sudo docker run
+#             --net=host
+#             --rm
+#             -v /var/lib/matchbox:/var/lib/matchbox:Z
+#             -v /etc/matchbox:/etc/matchbox:Z,ro
+#             quay.io/coreos/matchbox:latest
+#             -address=0.0.0.0:8080
+#             -rpc-address=0.0.0.0:8081
+#             -log-level=debug
