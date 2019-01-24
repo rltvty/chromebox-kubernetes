@@ -149,8 +149,9 @@ Follow the install process.  I'll note options you should choose below, for when
     * compare the hardware address for the Ethernet device on each box
     * For me was device `enp1s0`, and 2 of my 3 boxes had the same hardware address
 * if needed, adjust mac addreses:
+  * run `sudo apt install ifupdown`
   * edit `/etc/network/interfaces` => run `sudo vi /etc/network/interfaces`
-  * add a line to the ethernet adapter section to specify a unique hardware address on each box
+  * configure the ethernet adapter to specify a unique hardware address on each box
      * example completed config for `enp1s0`: 
      ```
       auto enp1s0
