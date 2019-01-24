@@ -118,31 +118,28 @@ Disk /dev/disk2 ejected
 
 #### Install ubuntu with minimal packages
 
-Follow the install process.  I'll note options you should choose below, for when it is less clear what to do.  These are the steps using Ubuntu Server 16.04.3 LTS.  They may be different on other versions
+Follow the install process.  I'll note options you should choose below, for when it is less clear what to do.  These are the steps using Ubuntu Server 18.04.1 LTS.  They may be different on other versions
 
-* Choose *Install Ubuntu Server*
-* Hostname selection: Make sure each box is different... I used cb0, cb1, and cb2
-* Username & Password: Use the same for all 3 boxes
-* Don't bother encrypting your home directory
-* Unmount partitions that are in use? - YES
-* Partitioning method: Manual, working on disk: SCSI1 (0,0,0) (sda)
-  * Note that we will create a single partition that covers the full disk.  There will be no swap partition since this is no longer usable with kubernetes and therefore will just take up space that can be used elsewhere.
-  * Delete Swap partition
-  * Delete Primary partition
-  * Create new partition in the free space
-    * 16 GB / Primary / Mount point: `/` / Bootable - On / Done setting up the partition
-* Finish partitioning and write chagnes to disk - YES
-* On no-swap-space confirmation page, say <No> to continue without setting up swap space.
-* Confirm <Yes> to write changes to disk.
-* HTTP proxy information: (blank)
-* How do you want to manage upgrades on this system? - Install security updates automatically
-
-* Choose software to install:
-* * unselect `standard system utilities` (takes about 600 MB that can be used for pods instead)
-* * select openssh-server
-
-* Install the GRUB boot loader to the master boot record? - YES
-* Device for boot laoder installation: /dev/sda
+* Choose your language (English for me), and default keyboard setup
+* Choose *Install Ubuntu*
+* Use default network interface
+* No proxy address
+* Use standard ubuntu mirror
+* Filesystem setup
+  * Use An Entire Disk
+    * Choose default
+  * Done
+  * Continue
+* Profile Setup
+   * Your Name
+   * Server name: should be differeont on each box... I used cb0, cb1, and cb2
+   * Username & Password: I recommend using the same for all 3 boxes
+   * Import SSH Identity: from Github
+     * Put in github username
+* Confirm github SSH keys
+* Featured Server Snaps, choose:
+  * docker
+* Reboot
 
 ### After initial boot
 
