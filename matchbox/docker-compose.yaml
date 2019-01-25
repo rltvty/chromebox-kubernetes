@@ -3,7 +3,6 @@
 version: "3"
 services:
   matchbox:
-    network_mode: "host"
     image: "quay.io/coreos/matchbox:latest"
     volumes:
       - ./config:/etc/matchbox:ro
