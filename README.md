@@ -161,127 +161,18 @@ Follow the install process.  I'll note options you should choose below, for when
   * restart the box to get the new network configuration
     * run `sudo shutdown -r now`
       
-### Setup SSH on chromebox
+### Installing Consul
 
-#### Create a SSH Key on your laptop
+Based on the [Consul Deployment Guide](https://learn.hashicorp.com/consul/advanced/day-1-operations/deployment-guide)
 
-```
-ssh-keygen
-Generating public/private rsa key pair.
-Enter file in which to save the key (/Users/epinzur/.ssh/id_rsa): id_rsa.home_kube
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in id_rsa.home_kube.
-Your public key has been saved in id_rsa.home_kube.pub.
-```
+* copy the `install_consul.sh` script to each machine and run it with sudo.  
+  * `sudo bash install_consul.sh`
+  * Follow the prompts.
 
-#### Copy SSH .pub keys onto a USB stick
+### Installing Nomad
 
-plug stick into chromebox
+Based on the [Nomad Deployment Guide](https://www.nomadproject.io/guides/operations/deployment-guide.html)
 
-* run `lsblk` to find the usb stick
-
-* run `sudo mkdir -p /mnt/usb`
-* run `sudo mount /dev/sd?? /mnt/usb`
-
-* run `mkdir ~/.ssh`
-* run `chmod 0700 ~/.ssh`
-* run `touch ~/.ssh/authorized_keys`
-* run `cat /mnt/usb/id_rsa.something.pub >> ~/.ssh/authorized_keys`
-* repeat above for additional ssh keys
-* run `chmod 0600 ~/.ssh/authorized_keys`
-
-* run `sudo umount /mnt/usb`
-
-#### Connect to chromebox via SSH from your laptop
-* `ssh -i .ssh/id_rsa.something username@IP.Address`
-
-## Create the intial Kubernetes Master
-
-Following the steps below, you can create a Kubernetes Master on a single chromebox.  After the initial master is setup, we will transition to a High Availablity (HA) cluster by copying configuration to the other boxes.
-
-Refrence http://kubernetes.io/docs/getting-started-guides/kubeadm/ for more info.
-
-### Install
-
-```
-# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-# cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-# apt-get update
-# apt-get install -y docker.io kubelet kubeadm kubectl kubernetes-cni
-```
-
-### Initialize Master
-
-* `kubeadm init`
-
-Output should look like this:
-
-```
-<master/tokens> generated token: "f0c861.753c505740ecde4c"
-<master/pki> created keys and certificates in "/etc/kubernetes/pki"
-<util/kubeconfig> created "/etc/kubernetes/kubelet.conf"
-<util/kubeconfig> created "/etc/kubernetes/admin.conf"
-<master/apiclient> created API client configuration
-<master/apiclient> created API client, waiting for the control plane to become ready
-<master/apiclient> all control plane components are healthy after 61.346626 seconds
-<master/apiclient> waiting for at least one node to register and become ready
-<master/apiclient> first node is ready after 4.506807 seconds
-<master/discovery> created essential addon: kube-discovery
-<master/addons> created essential addon: kube-proxy
-<master/addons> created essential addon: kube-dns
-
-Kubernetes master initialised successfully!
-
-You can connect any number of nodes by running:
-
-kubeadm join --token <token> <master-ip>
-```
-
-Make a record of the kubeadm join command that kubeadm init outputs. You will need this in a moment. The key included here is secret, keep it safe — anyone with this key can add authenticated nodes to your cluster.
-
-By default, your cluster will not schedule pods on the master for security reasons. Run the following to allow pods to be able to run on the master.
-
-* run `kubectl taint nodes --all dedicated-`
-
-This will remove the “dedicated” taint from any nodes that have it, including the master node, meaning that the scheduler will then be able to schedule pods everywhere.
-
-### Installing a pod network
-
-You must install a pod network add-on so that your pods can communicate with each other.
-
-`kubectl apply -f https://git.io/weave-kube`
-
-
-### Check out your running pods
-
-`kubectl get po --all-namespaces`
-
-Outputs something like: 
-
-```
-NAMESPACE     NAME                              READY     STATUS    RESTARTS   AGE
-kube-system   dummy-2088944543-e4rpp            1/1       Running   0          9m
-kube-system   etcd-cb0                          1/1       Running   0          8m
-kube-system   kube-apiserver-cb0                1/1       Running   2          9m
-kube-system   kube-controller-manager-cb0       1/1       Running   0          8m
-kube-system   kube-discovery-1150918428-ki3aj   1/1       Running   0          9m
-kube-system   kube-dns-654381707-oxofr          3/3       Running   0          9m
-kube-system   kube-proxy-qe2og                  1/1       Running   0          9m
-kube-system   kube-scheduler-cb0                1/1       Running   0          8m
-kube-system   weave-net-gzsis                   2/2       Running   0          2m
-```
-
-### Install Weave Scope and Kubernetes Dashboard
-
-* `kubectl apply -f 'https://cloud.weave.works/launch/k8s/weavescope.yaml'`
-* `kubectl apply -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml`
-
-
-
-
-
-
-
+* copy the `install_nomad.sh` script to each machine and run it with sudo.  
+  * `sudo bash install_nomad.sh`
+  * Follow the prompts.
