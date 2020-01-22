@@ -85,7 +85,7 @@ EOF
 chown --recursive nomad:nomad /etc/nomad.d
 chmod 640 /etc/nomad.d/nomad.hcl
 
-echo 'Create the server configuration file'
+echo 'Create the server & client configuration files'
 mkdir --parents /etc/nomad.d
 cat <<EOF >/etc/nomad.d/server.hcl
 server {
@@ -93,8 +93,15 @@ server {
   bootstrap_expect = 3
 }
 EOF
+cat <<EOF >/etc/nomad.d/client.hcl
+client {
+  enabled = true
+}
+EOF
+
 chown --recursive nomad:nomad /etc/nomad.d
 chmod 640 /etc/nomad.d/server.hcl
+chmod 640 /etc/nomad.d/client.hcl
 
 echo
 echo '*********** Starting nomad ***********'
