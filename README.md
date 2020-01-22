@@ -176,3 +176,10 @@ Based on the [Nomad Deployment Guide](https://www.nomadproject.io/guides/operati
 * copy the `install_nomad.sh` script to each machine and run it with sudo.  
   * `sudo bash install_nomad.sh`
   * Follow the prompts.
+  
+### Using Nomad
+
+Be sure to set the nomad address environment variable before using any nomad commands:
+```
+export NOMAD_ADDR=http://10.10.10.???:4646
+```
