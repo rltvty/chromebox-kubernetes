@@ -170,7 +170,7 @@ Follow the install process.  I'll note options you should choose below, for when
 ```
 ssh-keygen
 Generating public/private rsa key pair.
-Enter file in which to save the key (/Users/epinzur/.ssh/id_rsa): id_rsa.home_kube
+Enter file in which to save the key (/Users/user_name/.ssh/id_rsa): id_rsa.home_kube
 Enter passphrase (empty for no passphrase):
 Enter same passphrase again:
 Your identification has been saved in id_rsa.home_kube.
